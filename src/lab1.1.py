@@ -205,6 +205,7 @@ if __name__ == '__main__':
         path_filename = args[2]
         output_filename = args[3]
         image = Image.open(image)
+        image.save('terrain.png')
         # image.show()
         pixels = image.load()
         # 395 rows of 500 cols representing each pixel's color on a graph.
@@ -232,10 +233,10 @@ if __name__ == '__main__':
             drawing_path.append(tuple(point))
         path_drawing = ImageDraw.Draw(image)
         path_drawing.line(drawing_path, fill='#a146dd', width=1)
-        print("Total distance: " + str(total_meters))
+        print("DIST: " + str(total_meters))
         # print("Done!")
         # print("Path: " + str(traversedPath))
-        # image.save(output_filename)
+        image.save('output.png')
         image.show()
 
         # print(traversedPath)
