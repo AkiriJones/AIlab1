@@ -230,7 +230,7 @@ if __name__ == '__main__':
         try:
             traversedPath, total_meters = astar(startNode,goalPath,total_meters)
         except ValueError:
-
+            exit(1)
         drawing_path = []
         for point in traversedPath:
             drawing_path.append(tuple(point))
