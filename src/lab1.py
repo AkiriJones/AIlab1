@@ -227,13 +227,16 @@ if __name__ == '__main__':
         startNode = Node(None)
         startcoords = [int(path[0][0]),int(path[0][1])]
         startNode.setPosition(startcoords)
-        traversedPath, total_meters = astar(startNode,goalPath,total_meters)
+        try:
+            traversedPath, total_meters = astar(startNode,goalPath,total_meters)
+        except ValueError:
+
         drawing_path = []
         for point in traversedPath:
             drawing_path.append(tuple(point))
         path_drawing = ImageDraw.Draw(image)
         path_drawing.line(drawing_path, fill='#a146dd', width=1)
-        print("DIST: " + str(total_meters))
+        print(total_meters)
         # print("Done!")
         # print("Path: " + str(traversedPath))
         image.save('output.png')
