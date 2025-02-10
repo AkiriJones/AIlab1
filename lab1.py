@@ -233,15 +233,12 @@ if __name__ == '__main__':
             exit(1)
         except TypeError:
             print("No solution.")
-        drawing_path = []
-        for point in traversedPath:
-            drawing_path.append(tuple(point))
-        path_drawing = ImageDraw.Draw(image)
-        path_drawing.line(drawing_path, fill='#a146dd', width=1)
+        if traversedPath:
+            drawing_path = []
+            for point in traversedPath:
+                drawing_path.append(tuple(point))
+            path_drawing = ImageDraw.Draw(image)
+            path_drawing.line(drawing_path, fill='#a146dd', width=1)
         print(total_meters)
-        # print("Done!")
-        # print("Path: " + str(traversedPath))
-        image.save('output.png')
+        image.save('C:/Users/nanni/PycharmProjects/PythonProject/lab1/outputImageFile', format='PNG')
         image.show()
-
-        # print(traversedPath)
