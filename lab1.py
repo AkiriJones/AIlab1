@@ -240,5 +240,5 @@ if __name__ == '__main__':
             path_drawing = ImageDraw.Draw(image)
             path_drawing.line(drawing_path, fill='#a146dd', width=1)
         print(total_meters)
-        image.save('C:/Users/nanni/PycharmProjects/PythonProject/lab1/outputImageFile', format='PNG')
+        image.save(output_filename, format='PNG')
         image.show()
