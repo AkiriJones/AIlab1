@@ -169,8 +169,8 @@ def checkNeighbors(oldX:str, oldY:str) -> list[list[int]]:
     for x in range(oldX-1, oldX+2):
         y = oldY
         for y in range(oldY - 1, oldY + 2):
-            if not (x < 0) | (x > 395):
-                if not (y < 0) | (y > 500):
+            if not (x < 0) | (x >= 395):
+                if not (y < 0) | (y >= 500):
                     if not (x == oldX and y == oldY):
                         neighbors.append([x, y])
     return neighbors
