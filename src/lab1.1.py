@@ -9,7 +9,7 @@ import heapq
 
 xinmeters = 10.29
 yinmeters = 7.55
-
+total_meters = 0
 
 class Node:
     def __init__(self, parent=None):
@@ -33,7 +33,7 @@ def heuristic(curr,goal):
     return max((abs(goal[0] - int(curr[0])) , abs(goal[1] - int(curr[1])))) * currDiff
 
 
-def astar(start,checkList:list[list[str]]) -> list[Node]:
+def astar(start,checkList:list[list[str]], total_meters:int):
     """Finds the shortest path using the A* algorithm."""
     open_list = []
     closed_set = set()
@@ -50,14 +50,14 @@ def astar(start,checkList:list[list[str]]) -> list[Node]:
     counter = 0
     while open_list:
         current_node = heapq.heappop(open_list)  # Get node with lowest f-score
-        print("Points to hit " + str(checkList))
-        print("current: " + str(current_node.getPosition()))
-        print()
+        # print("Points to hit " + str(checkList))
+        # print("current: " + str(current_node.getPosition()))
+        # print()
 
         closed_set.add(tuple(current_node.position))
         # print()
         if isgoalpoint(current_node.position,checkList):
-            print("point " + str(checkList[0]) + "reached")
+            # print("point " + str(checkList[0]) + "reached")
             checkList.remove(checkList[0])
             visited_points.append(current_node)
             closed_set.clear()
@@ -69,8 +69,15 @@ def astar(start,checkList:list[list[str]]) -> list[Node]:
             path = []
             while current_node:
                 path.append(current_node.position)
+                if current_node != start_node:
+                    x1,x2 = current_node.getPosition()[0], current_node.parent.getPosition()[0]
+                    y1,y2 = current_node.parent.getPosition()[1], current_node.parent.getPosition()[1]
+                    abs_x = abs(x1 - x2)
+                    abs_y = abs(y1 - y2)
+                    total_meters += (abs_x * xinmeters) + (abs_y * yinmeters)
                 current_node = current_node.parent
-            return path[::-1]  # Return reversed path
+
+            return path[::-1],total_meters  # Return reversed path and total meters traversed
 
 
         neighbors = checkNeighbors(current_node.position[0], current_node.position[1])
@@ -219,7 +226,16 @@ if __name__ == '__main__':
         startNode = Node(None)
         startcoords = [int(path[0][0]),int(path[0][1])]
         startNode.setPosition(startcoords)
-        traversedPath = astar(startNode,goalPath)
-        print("Done!")
-        print("Path: " + str(traversedPath))
+        traversedPath, total_meters = astar(startNode,goalPath,total_meters)
+        drawing_path = []
+        for point in traversedPath:
+            drawing_path.append(tuple(point))
+        path_drawing = ImageDraw.Draw(image)
+        path_drawing.line(drawing_path, fill='#a146dd', width=1)
+        print("Total distance: " + str(total_meters))
+        # print("Done!")
+        # print("Path: " + str(traversedPath))
+        # image.save(output_filename)
+        image.show()
+
         # print(traversedPath)
