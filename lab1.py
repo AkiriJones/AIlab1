@@ -30,7 +30,8 @@ class Node:
 
 
 def heuristic(curr, goal):
-    currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
+    # currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
+    currDiff = difficultyMap.get(colorCoords.get((int(curr[0]), int(curr[1]))), 1)
     change_in_elevation = abs(elevationCoords[int(curr[0]), int(curr[1])] - elevationCoords[int(goal[0]), int(goal[1])])
     return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff
 
@@ -72,6 +73,8 @@ def astar(start, checkList: list[list[str]], total_meters: int):
             path = []
             while current_node:
                 path.append(current_node.position)
+                if current_node.parent is None:
+                    break
                 if current_node != start_node:
                     x1, x2 = current_node.getPosition()[0], current_node.parent.getPosition()[0]
                     y1, y2 = current_node.parent.getPosition()[1], current_node.parent.getPosition()[1]
@@ -261,5 +264,5 @@ if __name__ == '__main__':
             print("No solution.")
             sys.exit(0)
         print(total_meters)
-        image.save(output_filename, format='JPEG')
+        image.save(output_filename, format='PNG')
         image.show()
