@@ -40,15 +40,14 @@ def astar(start, checkList: list[list[str]], total_meters: int):
     """Finds the shortest path using the A* algorithm."""
     open_list = []
     closed_set = set()
-    visited_points = []
-    start_node = Node(None)
-    start_node.setPosition(start.getPosition())
-    visited_points.append(start)
+    visited_points = [start]
+    # start_node = Node(None)
+    # start_node.setPosition(start.getPosition())
     end_coords = [int(checkList[len(checkList)-1][0]), int(checkList[len(checkList)-1][1])]
     end_node = Node(None, end_coords)
     end_node.setPosition(end_coords)
 
-    heapq.heappush(open_list, start_node)
+    heapq.heappush(open_list, start)
     checkList.remove(checkList[0])
     counter = 0
     while open_list:
@@ -75,7 +74,7 @@ def astar(start, checkList: list[list[str]], total_meters: int):
                 path.append(current_node.position)
                 if current_node.parent is None:
                     break
-                if current_node != start_node:
+                if current_node != start:
                     x1, x2 = current_node.getPosition()[0], current_node.parent.getPosition()[0]
                     y1, y2 = current_node.parent.getPosition()[1], current_node.parent.getPosition()[1]
                     abs_x = abs(x1 - x2)
