@@ -50,8 +50,8 @@ def astar(start,checkList:list[list[str]], total_meters:int):
     counter = 0
     while open_list:
         current_node = heapq.heappop(open_list)  # Get node with lowest f-score
-        print("Points to hit " + str(checkList))
-        print("current: " + str(current_node.getPosition()))
+        # print("Points to hit " + str(checkList))
+        # print("current: " + str(current_node.getPosition()))
         # print()
 
         closed_set.add(tuple(current_node.position))
@@ -119,9 +119,9 @@ def getElevations(filename) -> dict:
     file = open(filename, 'r')
     y = 0
     for line in file:
-        if y <= 494:
+        if y <= img_height-1:
             elevations = line.strip().split()
-            for x in range(395):
+            for x in range(int(img_width)):
                 coord = [x,y]
                 elevationCoords[tuple(coord)] = elevations[x]
             # print(elevations)
@@ -202,19 +202,21 @@ if __name__ == '__main__':
     else:
         image = args[0]
         elevation = args[1]
-        elevationCoords = getElevations(elevation)
+
         path_filename = args[2]
         output_filename = args[3]
         image = Image.open(image)
+        img_width, img_height = image.size
         image.save('terrain.png')
+        elevationCoords = getElevations(elevation)
         # image.show()
         pixels = image.load()
         # 395 rows of 500 cols representing each pixel's color on a graph.
         colorCoords = {}
         coords = set()
         colorSet = set()
-        for x in range(395):
-            for y in range(500):
+        for x in range(int(img_width)):
+            for y in range(int(img_height)):
                 coord = [x,y]
                 coords.add(tuple(coord))
                 coordColor = pixels[x, y][:-1]
