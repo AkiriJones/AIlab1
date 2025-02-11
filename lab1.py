@@ -2,7 +2,6 @@ import random
 import sys
 from collections import deque, defaultdict
 
-
 from sys import argv
 from PIL import Image, ImageDraw
 import heapq
@@ -11,8 +10,9 @@ xinmeters = 10.29
 yinmeters = 7.55
 total_meters = 0
 
+
 class Node:
-    def __init__(self, parent=None, coordinates = None):
+    def __init__(self, parent=None, coordinates=None):
         self.position = coordinates
         self.parent = parent
         self.g = 0  # Cost from start to this node
@@ -21,19 +21,21 @@ class Node:
 
     def __lt__(self, other):
         return self.f < other.f  # Priority queue sorting
+
     def getPosition(self) -> list[int]:
         return self.position
+
     def setPosition(self, position: list[int]) -> None:
         self.position = position
 
-def heuristic(curr,goal):
-    currDiff = difficultyMap[colorCoords[int(curr[0]),int(curr[1])]]
-    # value = (abs(goal[0] - int(curr[0])) + abs(goal[1] - int(curr[1])))
-    # value = value * currDiff
-    return max((abs(goal[0] - int(curr[0])) , abs(goal[1] - int(curr[1])))) * currDiff
+
+def heuristic(curr, goal):
+    currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
+    change_in_elevation = abs(elevationCoords[int(curr[0]), int(curr[1])] - elevationCoords[int(goal[0]), int(goal[1])])
+    return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff * (change_in_elevation * .5)
 
 
-def astar(start,checkList:list[list[str]], total_meters:int):
+def astar(start, checkList: list[list[str]], total_meters: int):
     """Finds the shortest path using the A* algorithm."""
     open_list = []
     closed_set = set()
@@ -50,13 +52,13 @@ def astar(start,checkList:list[list[str]], total_meters:int):
     counter = 0
     while open_list:
         current_node = heapq.heappop(open_list)  # Get node with lowest f-score
-        # print("Points to hit " + str(checkList))
-        # print("current: " + str(current_node.getPosition()))
+        print("Points to hit " + str(checkList))
+        print("current: " + str(current_node.getPosition()))
         # print()
 
         closed_set.add(tuple(current_node.position))
         # print()
-        if isgoalpoint(current_node.position,checkList):
+        if isgoalpoint(current_node.position, checkList):
             # print("point " + str(checkList[0]) + "reached")
             checkList.remove(checkList[0])
             visited_points.append(current_node)
@@ -71,19 +73,18 @@ def astar(start,checkList:list[list[str]], total_meters:int):
             while current_node:
                 path.append(current_node.position)
                 if current_node != start_node:
-                    x1,x2 = current_node.getPosition()[0], current_node.parent.getPosition()[0]
-                    y1,y2 = current_node.parent.getPosition()[1], current_node.parent.getPosition()[1]
+                    x1, x2 = current_node.getPosition()[0], current_node.parent.getPosition()[0]
+                    y1, y2 = current_node.parent.getPosition()[1], current_node.parent.getPosition()[1]
                     abs_x = abs(x1 - x2)
                     abs_y = abs(y1 - y2)
                     total_meters += (abs_x * xinmeters) + (abs_y * yinmeters)
                 current_node = current_node.parent
 
-            return path[::-1],total_meters  # Return reversed path and total meters traversed
-
+            return path[::-1], total_meters  # Return reversed path and total meters traversed
 
         neighbors = checkNeighbors(current_node.position[0], current_node.position[1])
-        neighbors = getBestNeighbor(closed_set, current_node,neighbors,checkList)
-        for neighbor in neighbors: # Possible moves
+        neighbors = getBestNeighbor(closed_set, current_node, neighbors, checkList)
+        for neighbor in neighbors:  # Possible moves
             nbrCoords = neighbor
             neighbor = Node(current_node, nbrCoords)
             neighbor.setPosition(nbrCoords)
@@ -97,7 +98,7 @@ def astar(start,checkList:list[list[str]], total_meters:int):
     return None
 
 
-def isgoal(n)-> bool:
+def isgoal(n) -> bool:
     copyPath = goalPath.copy()
     currPath = n.copy()
     for coord in currPath:
@@ -107,55 +108,59 @@ def isgoal(n)-> bool:
         return False
     return True
 
-def isgoalpoint(coords,checkList: list[list[str]])-> bool:
+
+def isgoalpoint(coords, checkList: list[list[str]]) -> bool:
     if not checkList:
         return False
     else:
         point = checkList[0]
         return abs(coords[0] - int(point[0])) <= 1 and abs(coords[1] - int(point[1])) <= 1
 
+
 def getElevations(filename) -> dict:
     elevationCoords = {}
     file = open(filename, 'r')
     y = 0
     for line in file:
-        if y <= img_height-1:
+        if y <= img_height - 1:
             elevations = line.strip().split()
             for x in range(int(img_width)):
-                coord = [x,y]
-                elevationCoords[tuple(coord)] = elevations[x]
+                coord = [x, y]
+                elevationCoords[tuple(coord)] = float(elevations[x])
             # print(elevations)
         y += 1
     file.close()
     return elevationCoords
 
+
 def getDifficulties(colorset) -> dict:
     difficulties = {}
     for color in colorset:
-            match color:
-                case (2,208,60): #Slow run forest
-                    difficulties[color] = 0.5
-                case (255,192,0): #Rough meadow
-                    difficulties[color] = 0.7
-                case (0,0,0): #Footpath
-                    difficulties[color] = 0.01
-                case (5, 73, 24): #Impassible vegetation
-                    difficulties[color] = 0.95
-                case (255, 255, 255): #Easy movement forest
-                    difficulties[color] = 0.05
-                case (71, 51, 3): #Paved road
-                    difficulties[color] = 0.01
-                case (205, 0, 101): #Out of Bounds
-                    difficulties[color] = 1
-                case (2, 136, 40): #Walk forest
-                    difficulties[color] = 0.5
-                case (248, 148, 18): #Open land
-                    difficulties[color] = 0.01
-                case (0, 0, 255): #Lake/Swamp/Marsh
-                    difficulties[color] = 0.9
-                case _:
-                    difficulties[color] = 1000
+        match color:
+            case (2, 208, 60):  #Slow run forest
+                difficulties[color] = 0.5
+            case (255, 192, 0):  #Rough meadow
+                difficulties[color] = 0.7
+            case (0, 0, 0):  #Footpath
+                difficulties[color] = 0.01
+            case (5, 73, 24):  #Impassible vegetation
+                difficulties[color] = 0.95
+            case (255, 255, 255):  #Easy movement forest
+                difficulties[color] = 0.05
+            case (71, 51, 3):  #Paved road
+                difficulties[color] = 0.01
+            case (205, 0, 101):  #Out of Bounds
+                difficulties[color] = 1
+            case (2, 136, 40):  #Walk forest
+                difficulties[color] = 0.5
+            case (248, 148, 18):  #Open land
+                difficulties[color] = 0.01
+            case (0, 0, 255):  #Lake/Swamp/Marsh
+                difficulties[color] = 0.9
+            case defu:
+                difficulties[color] = 1000
     return difficulties
+
 
 def getPath(filename):
     path = []
@@ -163,11 +168,13 @@ def getPath(filename):
     for line in file:
         path.append(line.split())
     return path
-def checkNeighbors(oldX:str, oldY:str) -> list[list[int]]:
+
+
+def checkNeighbors(oldX: str, oldY: str) -> list[list[int]]:
     neighbors = []
     oldX = int(oldX)
     oldY = int(oldY)
-    for x in range(oldX-1, oldX+2):
+    for x in range(oldX - 1, oldX + 2):
         y = oldY
         for y in range(oldY - 1, oldY + 2):
             if not (x < 0) | (x >= 395):
@@ -176,7 +183,9 @@ def checkNeighbors(oldX:str, oldY:str) -> list[list[int]]:
                         neighbors.append([x, y])
     return neighbors
 
-def getBestNeighbor(currlist: set[tuple[list[int]]],curr:Node, neighbors:list[list[int]], checklist:list[list[str]]) -> list[list[int]]:
+
+def getBestNeighbor(currlist: set[tuple[list[int]]], curr: Node, neighbors: list[list[int]],
+                    checklist: list[list[str]]) -> list[list[int]]:
     point = checklist[0]
     point_x = int(point[0])
     point_y = int(point[1])
@@ -185,7 +194,7 @@ def getBestNeighbor(currlist: set[tuple[list[int]]],curr:Node, neighbors:list[li
 
     nbrs = []
     for nbr in neighbors:
-        if not difficultyMap[colorCoords[nbr[0],nbr[1]]] == 1:
+        if not difficultyMap[colorCoords[nbr[0], nbr[1]]] == 1:
             if not currlist.__contains__(tuple(nbr)):
                 nbrX_abs = abs(nbr[0] - point_x)
                 nbrY_abs = abs(nbr[1] - point_y)
@@ -202,7 +211,6 @@ if __name__ == '__main__':
     else:
         image = args[0]
         elevation = args[1]
-
         path_filename = args[2]
         output_filename = args[3]
         image = Image.open(image)
@@ -217,14 +225,16 @@ if __name__ == '__main__':
         colorSet = set()
         for x in range(int(img_width)):
             for y in range(int(img_height)):
-                coord = [x,y]
+                coord = [x, y]
                 coords.add(tuple(coord))
-                coordColor = pixels[x, y][:-1]
+                coordColor = pixels[x, y]
                 colorCoords[tuple(coord)] = coordColor
                 colorSet.add(coordColor)
         path = getPath(path_filename)
         # 1 being the easiest, 0 being the hardest
+        print(colorSet)
         difficultyMap = getDifficulties(colorSet)
+        print(difficultyMap)
         goalPath = path.copy()
         # goalPath.remove(goalPath[0])
         startcoords = [int(path[0][0]), int(path[0][1])]
@@ -232,7 +242,7 @@ if __name__ == '__main__':
         startNode.setPosition(startcoords)
         traversedPath = []
         try:
-            traversedPath, total_meters = astar(startNode,goalPath,total_meters)
+            traversedPath, total_meters = astar(startNode, goalPath, total_meters)
         except ValueError:
             exit(1)
         except TypeError:
