@@ -12,8 +12,8 @@ yinmeters = 7.55
 total_meters = 0
 
 class Node:
-    def __init__(self, parent=None):
-        self.position = None
+    def __init__(self, parent=None, coordinates = None):
+        self.position = coordinates
         self.parent = parent
         self.g = 0  # Cost from start to this node
         self.h = 0  # Heuristic cost to goal
@@ -41,8 +41,8 @@ def astar(start,checkList:list[list[str]], total_meters:int):
     start_node = Node(None)
     start_node.setPosition(start.getPosition())
     visited_points.append(start)
-    end_node = Node(None)
     end_coords = [int(checkList[0][0]), int(checkList[0][1])]
+    end_node = Node(None, end_coords)
     end_node.setPosition(end_coords)
 
     heapq.heappush(open_list, start_node)
@@ -85,7 +85,7 @@ def astar(start,checkList:list[list[str]], total_meters:int):
         neighbors = getBestNeighbor(closed_set, current_node,neighbors,checkList)
         for neighbor in neighbors: # Possible moves
             nbrCoords = neighbor
-            neighbor = Node(current_node)
+            neighbor = Node(current_node, nbrCoords)
             neighbor.setPosition(nbrCoords)
             neighbor.g = current_node.g + 1
             neighbor.h = heuristic(neighbor.position, end_node.position)
@@ -227,8 +227,8 @@ if __name__ == '__main__':
         difficultyMap = getDifficulties(colorSet)
         goalPath = path.copy()
         # goalPath.remove(goalPath[0])
-        startNode = Node(None)
-        startcoords = [int(path[0][0]),int(path[0][1])]
+        startcoords = [int(path[0][0]), int(path[0][1])]
+        startNode = Node(None, startcoords)
         startNode.setPosition(startcoords)
         traversedPath = []
         try:
