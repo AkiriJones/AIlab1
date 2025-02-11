@@ -246,9 +246,6 @@ if __name__ == '__main__':
         traversedPath = []
         try:
             traversedPath, total_meters = astar(startNode, goalPath, total_meters)
-            # if traversedPath is None:
-            #     print("No path")
-            #     sys.exit(0)
         except ValueError:
             exit(1)
         except TypeError:
