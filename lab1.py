@@ -154,7 +154,7 @@ def getDifficulties(colorset) -> dict:
                 case (0, 0, 255): #Lake/Swamp/Marsh
                     difficulties[color] = 0.9
                 case _:
-                    difficulties[color] = 0
+                    difficulties[color] = 1000
     return difficulties
 
 def getPath(filename):
