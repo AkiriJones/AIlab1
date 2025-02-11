@@ -32,7 +32,7 @@ class Node:
 def heuristic(curr, goal):
     currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
     change_in_elevation = abs(elevationCoords[int(curr[0]), int(curr[1])] - elevationCoords[int(goal[0]), int(goal[1])])
-    return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff * (change_in_elevation * .5)
+    return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff
 
 
 def astar(start, checkList: list[list[str]], total_meters: int):
