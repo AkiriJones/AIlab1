@@ -214,6 +214,7 @@ if __name__ == '__main__':
         path_filename = args[2]
         output_filename = args[3]
         image = Image.open(image)
+        image.convert('RGB')
         img_width, img_height = image.size
         image.save('terrain.png')
         elevationCoords = getElevations(elevation)
@@ -232,9 +233,9 @@ if __name__ == '__main__':
                 colorSet.add(coordColor)
         path = getPath(path_filename)
         # 1 being the easiest, 0 being the hardest
-        print(colorSet)
+        # print(colorSet)
         difficultyMap = getDifficulties(colorSet)
-        print(difficultyMap)
+        # print(difficultyMap)
         goalPath = path.copy()
         # goalPath.remove(goalPath[0])
         startcoords = [int(path[0][0]), int(path[0][1])]
