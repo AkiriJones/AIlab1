@@ -52,8 +52,8 @@ def astar(start, checkList: list[list[str]], total_meters: int):
     counter = 0
     while open_list:
         current_node = heapq.heappop(open_list)  # Get node with lowest f-score
-        print("Points to hit " + str(checkList))
-        print("current: " + str(current_node.getPosition()))
+        # print("Points to hit " + str(checkList))
+        # print("current: " + str(current_node.getPosition()))
         # print()
 
         closed_set.add(tuple(current_node.position))
