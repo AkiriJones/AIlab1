@@ -43,7 +43,7 @@ def astar(start, checkList: list[list[str]], total_meters: int):
     start_node = Node(None)
     start_node.setPosition(start.getPosition())
     visited_points.append(start)
-    end_coords = [int(checkList[0][0]), int(checkList[0][1])]
+    end_coords = [int(checkList[len(checkList)-1][0]), int(checkList[len(checkList)-1][1])]
     end_node = Node(None, end_coords)
     end_node.setPosition(end_coords)
 
@@ -157,8 +157,8 @@ def getDifficulties(colorset) -> dict:
                 difficulties[color] = 0.01
             case (0, 0, 255):  #Lake/Swamp/Marsh
                 difficulties[color] = 0.9
-            case defu:
-                difficulties[color] = 1000
+            case _:
+                difficulties[color] = 1
     return difficulties
 
 
@@ -244,6 +244,9 @@ if __name__ == '__main__':
         traversedPath = []
         try:
             traversedPath, total_meters = astar(startNode, goalPath, total_meters)
+            if traversedPath is None:
+                print("No path")
+                sys.exit(0)
         except ValueError:
             exit(1)
         except TypeError:
