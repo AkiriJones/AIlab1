@@ -261,5 +261,5 @@ if __name__ == '__main__':
             print("No solution.")
             sys.exit(0)
         print(total_meters)
-        image.save(output_filename, format='PNG')
+        image.save(output_filename, format='JPEG')
         image.show()
