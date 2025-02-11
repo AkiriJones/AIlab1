@@ -50,8 +50,8 @@ def astar(start,checkList:list[list[str]], total_meters:int):
     counter = 0
     while open_list:
         current_node = heapq.heappop(open_list)  # Get node with lowest f-score
-        # print("Points to hit " + str(checkList))
-        # print("current: " + str(current_node.getPosition()))
+        print("Points to hit " + str(checkList))
+        print("current: " + str(current_node.getPosition()))
         # print()
 
         closed_set.add(tuple(current_node.position))
@@ -61,6 +61,7 @@ def astar(start,checkList:list[list[str]], total_meters:int):
             checkList.remove(checkList[0])
             visited_points.append(current_node)
             closed_set.clear()
+            # open_list.clear()
             if checkList:
                 end_coords = [int(checkList[0][0]), int(checkList[0][1])]
                 end_node.setPosition(end_coords)
@@ -227,18 +228,22 @@ if __name__ == '__main__':
         startNode = Node(None)
         startcoords = [int(path[0][0]),int(path[0][1])]
         startNode.setPosition(startcoords)
+        traversedPath = []
         try:
             traversedPath, total_meters = astar(startNode,goalPath,total_meters)
         except ValueError:
             exit(1)
         except TypeError:
-            print("No solution.")
+            print("TypeError")
         if traversedPath:
             drawing_path = []
             for point in traversedPath:
                 drawing_path.append(tuple(point))
             path_drawing = ImageDraw.Draw(image)
             path_drawing.line(drawing_path, fill='#a146dd', width=1)
+        else:
+            print("No solution.")
+            sys.exit(0)
         print(total_meters)
         image.save(output_filename, format='PNG')
         image.show()
