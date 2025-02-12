@@ -32,7 +32,7 @@ class Node:
 def heuristic(curr, goal):
     # currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
     currDiff = difficultyMap.get(colorCoords.get((int(curr[0]), int(curr[1]))), 1)
-    change_in_elevation = abs(elevationCoords[int(curr[0]), int(curr[1])] - elevationCoords[int(goal[0]), int(goal[1])])
+    # change_in_elevation = abs(elevationCoords[int(curr[0]), int(curr[1])] - elevationCoords[int(goal[0]), int(goal[1])])
     return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff
 
 
@@ -43,7 +43,8 @@ def astar(start, checkList: list[list[str]], total_meters: int):
     visited_points = [start]
     # start_node = Node(None)
     # start_node.setPosition(start.getPosition())
-    end_coords = [int(checkList[len(checkList)-1][0]), int(checkList[len(checkList)-1][1])]
+    # visited_points.append(start)
+    end_coords = [int(checkList[0][0]), int(checkList[0][1])]
     end_node = Node(None, end_coords)
     end_node.setPosition(end_coords)
 
@@ -72,8 +73,6 @@ def astar(start, checkList: list[list[str]], total_meters: int):
             path = []
             while current_node:
                 path.append(current_node.position)
-                if current_node.parent is None:
-                    break
                 if current_node != start:
                     x1, x2 = current_node.getPosition()[0], current_node.parent.getPosition()[0]
                     y1, y2 = current_node.parent.getPosition()[1], current_node.parent.getPosition()[1]
@@ -160,7 +159,7 @@ def getDifficulties(colorset) -> dict:
             case (0, 0, 255):  #Lake/Swamp/Marsh
                 difficulties[color] = 0.9
             case _:
-                difficulties[color] = 1
+                difficulties[color] = 100
     return difficulties
 
 
@@ -196,7 +195,7 @@ def getBestNeighbor(currlist: set[tuple[list[int]]], curr: Node, neighbors: list
 
     nbrs = []
     for nbr in neighbors:
-        if not difficultyMap[colorCoords[nbr[0], nbr[1]]] == 1:
+        if not difficultyMap[colorCoords[nbr[0], nbr[1]]] <= 1:
             if not currlist.__contains__(tuple(nbr)):
                 nbrX_abs = abs(nbr[0] - point_x)
                 nbrY_abs = abs(nbr[1] - point_y)
