@@ -1,3 +1,4 @@
+import math
 import random
 import sys
 from collections import deque, defaultdict
@@ -42,9 +43,9 @@ def getTotalDistance(path: list[list[int]]) -> int:
     for i in range(len(path) - 1):
             x1, x2 = path[i][0], path[i + 1][0]
             y1, y2 = path[i][1], path[i + 1][1]
-            abs_x = abs(x1 - x2)
-            abs_y = abs(y1 - y2)
-            total_meters += (abs_x * xinmeters) + (abs_y * yinmeters)
+            abs_x = abs(x1 - x2) * xinmeters
+            abs_y = abs(y1 - y2) * yinmeters
+            total_meters += math.sqrt(abs_x ** 2 + abs_y ** 2)
     return total_meters
 
 def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
@@ -271,8 +272,8 @@ if __name__ == '__main__':
         endcoords = [path[len(path)-1][0], path[len(path)-1][1]]
         endNode = Node(None, endcoords)
         traversedPath = multi_stage_astar(startNode,goalPath,endNode)
-        print(getTotalDistance(traversedPath))
         if traversedPath:
+            print(getTotalDistance(traversedPath))
             drawing_path = []
             for point in traversedPath:
                 drawing_path.append(tuple(point))
@@ -280,3 +281,5 @@ if __name__ == '__main__':
             path_drawing.line(drawing_path, fill='#a146dd', width=1)
             map.save(output_filename, format='PNG')
             map.show()
+        else:
+            print("Couldn't find path.")
