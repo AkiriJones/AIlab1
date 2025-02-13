@@ -189,6 +189,7 @@ def getDifficulties(colorset) -> dict:
                 difficulties[color] = 0.01
             case (0, 0, 255):  #Lake/Swamp/Marsh
                 difficulties[color] = 0.9
+            case (191,191,191): difficulties[color] = 1
             case _:
                 difficulties[color] = 100
     return difficulties
