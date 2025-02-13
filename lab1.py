@@ -233,10 +233,10 @@ def getBestNeighbor(currlist: set[tuple[list[int]]], curr: Node, neighbors: list
         if change <= 25:
             if difficultyMap[colorCoords[nbr[0], nbr[1]]] < 1:
                 if not currlist.__contains__(tuple(nbr)):
-                    nbrX_abs = abs(nbr[0] - point_x)
-                    nbrY_abs = abs(nbr[1] - point_y)
-                    if nbrX_abs < currX_abs or nbrY_abs < currY_abs:
-                        nbrs.append(nbr)
+                    # nbrX_abs = abs(nbr[0] - point_x)
+                    # nbrY_abs = abs(nbr[1] - point_y)
+                    # if nbrX_abs < currX_abs or nbrY_abs < currY_abs:
+                    nbrs.append(nbr)
     return nbrs
 
 
