@@ -34,7 +34,7 @@ def heuristic(curr, goal):
     # currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
     currDiff = difficultyMap.get(colorCoords.get((int(curr[0]), int(curr[1]))), 1)
     # change_in_elevation = abs(elevationCoords[curr[0], curr[1]] - elevationCoords[goal[0], goal[1]])
-    return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff
+    return min((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff
 
 
 def getTotalDistance(path: list[list[int]]) -> int:
