@@ -50,16 +50,16 @@ def getTotalDistance(path: list[list[int]]) -> int:
 def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
     """Finds the shortest path using the A* algorithm."""
     open_list = []
+    open_dict = {}
     closed_set = set()
     start_node = Node(None,start)
 
-    heapq.heappush(open_list, start_node)
+    heapq.heappush(open_list, (start_node.f,start_node))
+    open_dict[tuple(start_node.position)] = start_node
     while open_list:
-        current_node = heapq.heappop(open_list)  # Get node with lowest f-score
-        # currX = current_node.getPosition()[0]
-        # currY = current_node.getPosition()[1]
-        # if list[(231,326)] == list[(currX, currY)] and checkPoint[0] == 230 and checkPoint[1] == 327:
-        #     print()
+        _,current_node = heapq.heappop(open_list)  # Get node with lowest f-score
+        if tuple(current_node.position) in open_dict:
+            del open_dict[tuple(current_node.position)]
         # print("Points to hit " + str(checkList))
         # print("current: " + str(current_node.getPosition()))
         # print()
@@ -80,10 +80,12 @@ def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
             neighbor.g = current_node.g + 1
             neighbor.h = heuristic(neighbor.position, checkPoint)
             neighbor.f = neighbor.g + neighbor.h
-            if any(n.position == neighbor.position and n.g <= neighbor.g for n in open_list):
+
+            if tuple(neighbor.position) in open_dict and open_dict[tuple(neighbor.position)].g <= neighbor.g:
                 continue
             if tuple(neighbor.position) not in closed_set:
-                heapq.heappush(open_list, neighbor)
+                heapq.heappush(open_list, (neighbor.f,neighbor))
+                open_dict[tuple(neighbor.position)] = neighbor
     return None
 
 
@@ -91,8 +93,8 @@ def ConstructPath(start, waypoints, goal):
     total_path = []
     current_position = start.getPosition()
     for waypoint in waypoints:  # Move through each intermediate goal
-        if current_position[0] == 303 and  current_position[1] == 240:
-            print()
+        # if current_position[0] == 303 and  current_position[1] == 240:
+        #     print()
         path_segment = astar(current_position,waypoint)
         if path_segment is None:
             return None  # No valid path exists
@@ -200,8 +202,8 @@ def getBestNeighbor(currlist: set[tuple[list[int]]], curr: Node, neighbors: list
                     checkpoint: list[int]) -> list[list[int]]:
     point_x = checkpoint[0]
     point_y = checkpoint[1]
-    currX_abs = abs(curr.position[0] - point_x)
-    currY_abs = abs(curr.position[1] - point_y)
+    # currX_abs = abs(curr.position[0] - point_x)
+    # currY_abs = abs(curr.position[1] - point_y)
     curr_Ele = elevationCoords[(point_x, point_y)]
     nbrs = []
     for nbr in neighbors:
