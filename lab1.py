@@ -31,7 +31,6 @@ class Node:
 
 
 def heuristic(curr, goal):
-    # currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
     currDiff = difficultyMap.get(colorCoords.get((int(curr[0]), int(curr[1]))), 1)
     # change_in_elevation = abs(elevationCoords[curr[0], curr[1]] - elevationCoords[goal[0], goal[1]])
     return min((abs(goal[0] - curr[0]), abs(goal[1] - curr[1]))) * currDiff
@@ -55,8 +54,6 @@ def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
     start_node = Node(None,start)
 
     heapq.heappush(open_list, start_node)
-    # checkList.remove(checkList[0])
-    counter = 0
     while open_list:
         current_node = heapq.heappop(open_list)  # Get node with lowest f-score
         # currX = current_node.getPosition()[0]
@@ -90,12 +87,12 @@ def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
     return None
 
 
-def multi_stage_astar(start, waypoints, goal):
+def ConstructPath(start, waypoints, goal):
     total_path = []
     current_position = start.getPosition()
-
     for waypoint in waypoints:  # Move through each intermediate goal
-        # point_node = Node(None, waypoint)
+        if current_position[0] == 303 and  current_position[1] == 240:
+            print()
         path_segment = astar(current_position,waypoint)
         if path_segment is None:
             return None  # No valid path exists
@@ -136,7 +133,6 @@ def getElevations(filename) -> dict:
             for x in range(int(img_width)):
                 coord = [x, y]
                 elevationCoords[tuple(coord)] = float(elevations[x])
-            # print(elevations)
         y += 1
     file.close()
     return elevationCoords
@@ -211,7 +207,7 @@ def getBestNeighbor(currlist: set[tuple[list[int]]], curr: Node, neighbors: list
     for nbr in neighbors:
         nbr_ele = elevationCoords[(nbr[0], nbr[1])]
         change = abs(nbr_ele - curr_Ele)
-        if change <= 10:
+        if change <= 25:
             if difficultyMap[colorCoords[nbr[0], nbr[1]]] < 1:
                 if not currlist.__contains__(tuple(nbr)):
                     # nbrX_abs = abs(nbr[0] - point_x)
@@ -258,7 +254,7 @@ if __name__ == '__main__':
         startNode = Node(None, startcoords)
         endcoords = [path[len(path)-1][0], path[len(path)-1][1]]
         endNode = Node(None, endcoords)
-        traversedPath = multi_stage_astar(startNode,goalPath,endNode)
+        traversedPath = ConstructPath(startNode, goalPath, endNode)
         if traversedPath:
             print(getTotalDistance(traversedPath))
             drawing_path = []
