@@ -33,8 +33,8 @@ class Node:
 
 def heuristic(curr, goal):
     currDiff = difficultyMap.get(colorCoords.get((int(curr[0]), int(curr[1]))), 1)
-    # change_in_elevation = abs(elevationCoords[curr[0], curr[1]] - elevationCoords[goal[0], goal[1]])
-    return min((abs(goal[0] - curr[0]), abs(goal[1] - curr[1]))) * currDiff
+    change_in_elevation = abs(elevationCoords[curr[0], curr[1]] - elevationCoords[goal[0], goal[1]])
+    return min((abs(goal[0] - curr[0]), abs(goal[1] - curr[1]))) * currDiff * (change_in_elevation/100)
 
 
 def getTotalDistance(path: list[list[int]]) -> int:
