@@ -65,6 +65,10 @@ def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
     counter = 0
     while open_list:
         current_node = heapq.heappop(open_list)  # Get node with lowest f-score
+        # currX = current_node.getPosition()[0]
+        # currY = current_node.getPosition()[1]
+        # if list[(231,326)] == list[(currX, currY)] and checkPoint[0] == 230 and checkPoint[1] == 327:
+        #     print()
         # print("Points to hit " + str(checkList))
         # print("current: " + str(current_node.getPosition()))
         # print()
@@ -142,7 +146,7 @@ def isgoalpoint(coords, checkpoint: list[int]) -> bool:
     if not checkpoint:
         return False
     else:
-        return abs(coords[0] - checkpoint[0]) <= 1 and abs(coords[1] - checkpoint[1]) <= 1
+        return abs(coords[0] - checkpoint[0]) < 1 and abs(coords[1] - checkpoint[1]) < 1
 
 
 def getElevations(filename) -> dict:
@@ -202,13 +206,12 @@ def getPath(filename):
     return path
 
 
-def checkNeighbors(oldX: str, oldY: str) -> list[list[int]]:
+def checkNeighbors(oldX: int, oldY: int) -> list[list[int]]:
     neighbors = []
-    oldX = int(oldX)
-    oldY = int(oldY)
-    for x in range(oldX - 1, oldX + 2):
-        y = oldY
-        for y in range(oldY - 1, oldY + 2):
+    xArray = [oldX-1,oldX,oldX+1]
+    yArray = [oldY-1,oldY,oldY+1]
+    for x in xArray:
+        for y in yArray:
             if not (x < 0) | (x >= 395):
                 if not (y < 0) | (y >= 500):
                     if not (x == oldX and y == oldY):
@@ -286,4 +289,5 @@ if __name__ == '__main__':
             map.show()
         else:
             print("Couldn't find path.")
+            map.save(output_filename, format='PNG')
             map.show()
