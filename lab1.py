@@ -33,8 +33,8 @@ class Node:
 def heuristic(curr, goal):
     # currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
     currDiff = difficultyMap.get(colorCoords.get((int(curr[0]), int(curr[1]))), 1)
-    change_in_elevation = abs(elevationCoords[curr[0], curr[1]] - elevationCoords[goal[0], goal[1]])
-    return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff * (change_in_elevation *.3)
+    # change_in_elevation = abs(elevationCoords[curr[0], curr[1]] - elevationCoords[goal[0], goal[1]])
+    return max((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff
 
 
 def getTotalDistance(path: list[list[int]]) -> int:
@@ -228,11 +228,12 @@ def getBestNeighbor(currlist: set[tuple[list[int]]], curr: Node, neighbors: list
         nbr_ele = elevationCoords[(nbr[0], nbr[1])]
         change = abs(nbr_ele - curr_Ele)
         if change <= 25:
-            if not currlist.__contains__(tuple(nbr)):
-                nbrX_abs = abs(nbr[0] - point_x)
-                nbrY_abs = abs(nbr[1] - point_y)
-                if nbrX_abs < currX_abs or nbrY_abs < currY_abs:
-                    nbrs.append(nbr)
+            if difficultyMap[colorCoords[nbr[0], nbr[1]]] < 1:
+                if not currlist.__contains__(tuple(nbr)):
+                    nbrX_abs = abs(nbr[0] - point_x)
+                    nbrY_abs = abs(nbr[1] - point_y)
+                    if nbrX_abs < currX_abs or nbrY_abs < currY_abs:
+                        nbrs.append(nbr)
     return nbrs
 
 
