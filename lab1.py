@@ -2,7 +2,7 @@ import math
 import random
 import sys
 from collections import deque, defaultdict
-
+import numpy as np
 from sys import argv
 from PIL import Image, ImageDraw
 import heapq
@@ -11,6 +11,7 @@ xinmeters = 10.29
 yinmeters = 7.55
 total_meters = 0
 
+elevation_array = np.zeros((395, 500))
 
 class Node:
     def __init__(self, parent=None, coordinates=None):
@@ -234,6 +235,8 @@ if __name__ == '__main__':
         map.convert('RGB')
         img_width, img_height = map.size
         elevationCoords = getElevations(elevation)
+        for (x, y), elevation in elevationCoords.items():
+            elevation_array[x, y] = elevation
         # image.show()
         pixels = map.load()
         # 395 rows of 500 cols representing each pixel's color on a graph.
