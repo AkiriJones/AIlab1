@@ -34,7 +34,7 @@ def heuristic(curr, goal):
     # currDiff = difficultyMap[colorCoords[int(curr[0]), int(curr[1])]]
     currDiff = difficultyMap.get(colorCoords.get((int(curr[0]), int(curr[1]))), 1)
     # change_in_elevation = abs(elevationCoords[curr[0], curr[1]] - elevationCoords[goal[0], goal[1]])
-    return min((abs(goal[0] - int(curr[0])), abs(goal[1] - int(curr[1])))) * currDiff
+    return min((abs(goal[0] - curr[0]), abs(goal[1] - curr[1]))) * currDiff
 
 
 def getTotalDistance(path: list[list[int]]) -> int:
@@ -52,13 +52,7 @@ def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
     """Finds the shortest path using the A* algorithm."""
     open_list = []
     closed_set = set()
-    # visited_points = [Node]
     start_node = Node(None,start)
-    # start_node.setPosition(start.getPosition())
-    # visited_points.append(start)
-    # end_coords = [int(checkList[0][0]), int(checkList[0][1])]
-    # end_node = Node(None, end_coords)
-    # end_node.setPosition(end_coords)
 
     heapq.heappush(open_list, start_node)
     # checkList.remove(checkList[0])
@@ -81,20 +75,6 @@ def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
                 current_node = current_node.parent
             return path[::-1]
 
-        # if isgoal(visited_points):
-        #     path = []
-        #     while current_node:
-        #         path.append(current_node.position)
-        #         # if current_node != start:
-        #         #     x1, x2 = current_node.getPosition()[0], current_node.parent.getPosition()[0]
-        #         #     y1, y2 = current_node.parent.getPosition()[1], current_node.parent.getPosition()[1]
-        #         #     abs_x = abs(x1 - x2)
-        #         #     abs_y = abs(y1 - y2)
-        #         #     total_meters += (abs_x * xinmeters) + (abs_y * yinmeters)
-        #         current_node = current_node.parent
-        #
-        #     return path[::-1]  # Return reversed path and total meters traversed
-
         neighbors = checkNeighbors(current_node.position[0], current_node.position[1])
         neighbors = getBestNeighbor(closed_set, current_node, neighbors, checkPoint)
         for neighbor in neighbors:  # Possible moves
@@ -109,9 +89,6 @@ def astar(start: Node, checkPoint: list[int]) -> list[Node] | None:
                 heapq.heappush(open_list, neighbor)
     return None
 
-# def getTotalDistance(list[Node]) -> int:
-#
-#     return 0
 
 def multi_stage_astar(start, waypoints, goal):
     total_path = []
