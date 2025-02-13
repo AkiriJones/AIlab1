@@ -211,7 +211,7 @@ def getBestNeighbor(currlist: set[tuple[list[int]]], curr: Node, neighbors: list
     for nbr in neighbors:
         nbr_ele = elevationCoords[(nbr[0], nbr[1])]
         change = abs(nbr_ele - curr_Ele)
-        if change <= 25:
+        if change <= 10:
             if difficultyMap[colorCoords[nbr[0], nbr[1]]] < 1:
                 if not currlist.__contains__(tuple(nbr)):
                     # nbrX_abs = abs(nbr[0] - point_x)
